@@ -139,7 +139,7 @@ class modonlineaccount extends DolibarrModules
 		// 'stock'            to add a tab in stock view
 		// 'thirdparty'       to add a tab in third party view
 		// 'user'             to add a tab in user view
-        $this->tabs = array();
+        $this->tabs = array('contact:+onlineaccount:onlineaccount:onlineaccount@onlineaccount::/onlineaccount/card.php?id=__ID__');
 
         // Dictionaries
 	    if (! isset($conf->onlineaccount->enabled))
@@ -331,11 +331,17 @@ class modonlineaccount extends DolibarrModules
 	{
 		$sql = array();
 		
-		define('INC_FROM_DOLIBARR',true);
+		if(! defined('INC_FROM_DOLIBARR')) define('INC_FROM_DOLIBARR',true);
 
 		require dol_buildpath('/onlineaccount/script/create-maj-base.php');
 
 		$result=$this->_load_tables('/onlineaccount/sql/');
+        
+        include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		$extrafields=new ExtraFields($this->db);
+        $param = unserialize('a:1:{s:7:"options";a:1:{s:0:"";N;}}');
+		$res = $extrafields->addExtraField('token', 'Token', 'varchar', 0, 255, 'user', 0, 0, 'null', $param, 0, '', 0, 1);
+		$res = $extrafields->addExtraField('date_token', 'Date limite token', 'date', 0, '', 'user', 0, 0, 'null', $param, 1, '', 0, 1);
 
 		return $this->_init($sql, $options);
 	}
