@@ -69,11 +69,8 @@ if (empty($reshook))
             $dolibarr_user->email = GETPOST('email', 'alpha');
             $dolibarr_user->user_mobile = GETPOST('phone');
 
-            if(! empty($dolibarr_user->email)) {
-                $date_token = dol_mktime(12, 0, 0, GETPOST('date_tokenmonth'), GETPOST('date_tokenday'), GETPOST('date_tokenyear'));
-                $dolibarr_user->array_options['options_token'] = hash('sha256', $dolibarr_user->email.time());
-                $dolibarr_user->array_options['options_date_token'] = $date_token;
-            }
+            $date_token = dol_mktime(12, 0, 0, GETPOST('date_tokenmonth'), GETPOST('date_tokenday'), GETPOST('date_tokenyear'));
+            $dolibarr_user->array_options['options_date_token'] = $date_token;
 
             $ret = $dolibarr_user->update($user);
             if ($ret < 0) {
@@ -163,8 +160,7 @@ if(! empty($dolibarr_user->id)) {
 
         // Token
         print '<tr><td>'.$langs->trans("Token").'</td>';
-        print '<td width="300">';
-        print '<input type="hidden" name="token" value="'.$dolibarr_user->array_options['options_token'].'" />';
+        print '<td id="token" width="300">';
         print $dolibarr_user->array_options['options_token'];
         print '</td><td style="padding-left: 15px;"><i class="fa fa-refresh fa-lg" aria-hidden="true"></i></td></tr>';
 
@@ -185,6 +181,28 @@ if(! empty($dolibarr_user->id)) {
         print '</td></tr>';
 
         print '</table>';
+        ?>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('i.fa.fa-refresh').click(function() {
+                        $.ajax({
+                            url: "./script/interface.php"
+                            ,data: {
+                                json: 1
+                                ,action: 'generate_token'
+                                ,fk_user: <?php echo $dolibarr_user->id; ?>
+                            }
+                            ,dataType: 'json'
+                            ,type: 'POST'
+                            ,async: true
+                        }).done(function(token) {
+                            $('#token').text(token);
+                        });
+                });
+            });
+        </script>
+        <?php
     }
     else {  // View
         print '<table class="border tableforfield" width="100%">';
