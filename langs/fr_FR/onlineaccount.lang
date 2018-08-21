@@ -16,11 +16,8 @@ ParamHelp=Le contenu de l'aide
 # CARD
 Newonlineaccount=Création onlineaccount
 onlineaccountCard=Fiche onlineaccount
-
-# CARD TPL
-Save=Enregistrer
-CreateDraft=Créer brouillon
-Cancel=Annuler
-Validate=Valider
-Modify=Modifier
-Delete=Supprimer
+DateToken = Date limite token
+GeneratePassword = Réinitialiser mot de passe
+NewPassword = Nouveau mot de passe
+ConfirmNewPassword = Confirmer mot de passe
+InvalidToken = Token incorrect
