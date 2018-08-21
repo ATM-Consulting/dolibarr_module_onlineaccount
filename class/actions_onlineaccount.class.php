@@ -61,12 +61,12 @@ class Actionsonlineaccount
 	 */
 	function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-		$error = 0; // Error counter
-		$myvalue = 'test'; // A result value
+//		$error = 0; // Error counter
+//		$myvalue = 'test'; // A result value
 
-		print_r($parameters);
-		echo "action: " . $action;
-		print_r($object);
+//		print_r($parameters);
+//		echo "action: " . $action;
+//		print_r($object);
 
 		if (in_array('somecontext', explode(':', $parameters['context'])))
 		{
@@ -75,14 +75,32 @@ class Actionsonlineaccount
 
 		if (! $error)
 		{
-			$this->results = array('myreturn' => $myvalue);
-			$this->resprints = 'A text to show';
+//			$this->results = array('myreturn' => $myvalue);
+//			$this->resprints = 'A text to show';
 			return 0; // or return 1 to replace standard code
 		}
 		else
 		{
-			$this->errors[] = 'Error message';
+//			$this->errors[] = 'Error message';
 			return -1;
 		}
+	}
+
+    /**
+	 * elementList Method Hook Call
+	 *
+	 * @param array $parameters parameters
+	 * @param Object &$object Object to use hooks on
+	 * @param string &$action Action code on calling page ('create', 'edit', 'view', 'add', 'update', 'delete'...)
+	 * @param object $hookmanager class instance
+	 * @return void
+	 */
+	public function emailElementlist($parameters, &$object, &$action, $hookmanager) {
+		global $langs, $conf, $user;
+		$langs->load('onlineaccount@onlineaccount');
+
+		$this->results['password_reinit'] = $langs->trans('onlineaccountReinitPassword');
+
+		return 0;
 	}
 }

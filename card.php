@@ -7,6 +7,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/contact.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 dol_include_once('/contact/class/contact.class.php');
 dol_include_once('/onlineaccount/lib/onlineaccount.lib.php');
+dol_include_once('/onlineaccount/class/onlineaccount.class.php');
 
 $TArrayOfCss = array();
 
@@ -19,6 +20,7 @@ $langs->load('users');
 
 $action = GETPOST('action');
 $id = GETPOST('id', 'int');
+$confirm = GETPOST('confirm');
 
 if(empty($action)) $action = 'view';
 //if (empty($user->rights->onlineaccount->write)) $mode = 'view'; // Force 'view' mode if can't edit object
@@ -27,6 +29,8 @@ $object = new Contact($db);
 $soc = new Societe($db);
 $dolibarr_user=new User($db);
 $extrafields = new ExtraFields($db);
+$online_account = new OnlineAccount($db);
+$form = new Form($db);
 
 // fetch optionals attributes and labels
 $extralabels=$extrafields->fetch_name_optionals_label($dolibarr_user->table_element);
@@ -48,6 +52,17 @@ if (empty($reshook))
 {
 	$error = 0;
 	switch ($action) {
+        case 'send_mail_new_password':
+            if(! empty($confirm)) {
+                $TParams = array(
+                    'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePassword').'</a>',
+                );
+                $online_account->sendMail($dolibarr_user, 0, $TParams);
+                setEventMessage($langs->trans('onlineaccountResetPwdEmailSent', $dolibarr_user->email));
+            }
+            header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id);
+            exit;
+            break;
 		case 'create_user':
 			$login = dol_buildlogin($object->lastname, $object->firstname);
             $pwd = getRandomPassword(false);
@@ -101,10 +116,13 @@ if (empty($reshook))
 /**
  * View
  */
-$form = new Form($db);
 
 $title=$langs->trans("onlineaccount");
 llxHeader('', $title, '', '', 0, 0, array(), $TArrayOfCss);
+
+if($action == 'genPwd') {
+    echo $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$id, $langs->trans('ConfirmResetPwd'), $langs->trans('ResetPwd'), 'send_mail_new_password', '', '', 1);
+}
 
 $head = contact_prepare_head($object);
 $title = (! empty($conf->global->SOCIETE_ADDRESSES_MANAGEMENT) ? $langs->trans("Contacts") : $langs->trans("ContactsAddresses"));
@@ -259,7 +277,7 @@ print '<div class="tabsAction">';
 if($action != 'edit') {
     if(empty($object->user_id)) print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=create_user">'.$langs->trans('CreateUser').'</a>';
     else {
-        print '<a class="butActionRefused" title="Comming soon !" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=genPwd">'.$langs->trans('GeneratePassword').'</a>';
+        print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=genPwd">'.$langs->trans('GeneratePassword').'</a>';
         print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit">'.$langs->trans('Modify').'</a>';
     }
 }

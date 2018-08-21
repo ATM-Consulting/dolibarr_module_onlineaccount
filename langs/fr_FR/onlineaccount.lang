@@ -7,6 +7,7 @@ onlineaccountSetup = Configuration du module onlineaccount
 onlineaccountAbout = A propos du module onlineaccount
 
 onlineaccount=Compte en ligne
+onlineaccountReinitPassword = Module compte en ligne - Réinitialisation du mot de passe
 
 # SETUP
 ParamLabel=Nom du paramètre
@@ -22,3 +23,6 @@ ConfirmNewPassword = Confirmer mot de passe
 InvalidToken = Token incorrect
 EmptyPassword = Le champ 'mot de passe' ne peut pas être vide
 WrongPasswordConfirm = Les deux mots de passe renseignés sont différents
+ConfirmResetPwd = Réinitialiser mot de passe
+ResetPwd = Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?
+onlineaccountResetPwdEmailSent = Le mail a été envoyé à '%s' pour réinitialiser le mot de passe
