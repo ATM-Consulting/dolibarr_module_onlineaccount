@@ -68,6 +68,11 @@ if (empty($reshook))
 			$login = dol_buildlogin($object->lastname, $object->firstname);
             $pwd = getRandomPassword(false);
 
+            if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($dolibarr_user->email)) {
+                $dolibarr_user->email = 'email@example.com';
+                $object->email = $dolibarr_user->email;     // Just for tmp uses, in create function it will takes the contact email as user email
+            }
+
             $dolibarr_user->create_from_contact($object, $login);
             $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
 
