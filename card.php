@@ -75,6 +75,7 @@ if (empty($reshook))
 
             $dolibarr_user->create_from_contact($object, $login);
             $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
+            if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
 
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
             exit;
@@ -241,7 +242,7 @@ if(! empty($dolibarr_user->id)) {
         // Login
         print '<tr>';
         print '<td>'.$langs->trans("Login").'</td><td width="300" colspan="2">';
-        print $dolibarr_user->login;
+        print $dolibarr_user->getLoginUrl(1);
         print '</td>';
         print '</tr>';
 

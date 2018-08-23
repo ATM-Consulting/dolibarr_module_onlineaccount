@@ -100,17 +100,24 @@ $form=new Form($db);
 $var=false;
 print '<table class="noborder" width="100%">';
 
-
 _print_title("Parameters");
 
-// Example with a yes / no select
-_print_on_off('CONSTNAME', 'ParamLabel' , 'ParamDesc');
+$var=!$var;
 
-// Example with imput
-_print_input_form_part('CONSTNAME', 'ParamLabel');
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans('onlineaccountDefaultUserGroup').'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_ONLINE_ACCOUNT_DEFAULT_USER_GROUP">';
+print $form->select_dolgroups($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, 'ONLINE_ACCOUNT_DEFAULT_USER_GROUP', 1);
+print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
+print '</form>';
+print '</td></tr>';
 
 // Example with color
-_print_input_form_part('CONSTNAME', 'ParamLabel', 'ParamDesc', array('type'=>'color'),'input','ParamHelp');
+//_print_input_form_part('CONSTNAME', 'ParamLabel', 'ParamDesc', array('type'=>'color'),'input','ParamHelp');
 
 // Example with placeholder
 //_print_input_form_part('CONSTNAME','ParamLabel','ParamDesc',array('placeholder'=>'http://'),'input','ParamHelp');
@@ -131,7 +138,7 @@ function _print_title($title="")
 {
     global $langs;
     print '<tr class="liste_titre">';
-    print '<td>'.$langs->trans($title).'</td>'."\n";
+    print '<td width="700">'.$langs->trans($title).'</td>'."\n";
     print '<td align="center" width="20">&nbsp;</td>';
     print '<td align="center" ></td>'."\n";
     print '</tr>';
