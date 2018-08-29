@@ -192,7 +192,7 @@ if(! empty($dolibarr_user->id)) {
         // Date Token
         print '<tr><td>'.$langs->trans("DateToken").'</td>';
         print '<td colspan="2">';
-        print $form->select_date(empty($dolibarr_user->array_options['options_date_token']) ? -1 : $dolibarr_user->array_options['options_date_token'], 'date_token');
+        print $form->select_date(empty($dolibarr_user->array_options['options_date_token']) ? -1 : $dolibarr_user->array_options['options_date_token'], 'date_token', 0, 0, 0, '', 1, 1);
         print '</td></tr>';
 
         // Email
