@@ -2,6 +2,7 @@
 
 require ('../config.php');
 require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
+dol_include_once('/onlineaccount/class/onlineaccount.class.php');
 
 $action = GETPOST('action','alpha');
 
@@ -12,14 +13,10 @@ switch($action) {
 }
 
 function _generate_token(&$db, $fk_user) {
-    $dolibarr_user = new User($db);
-    $dolibarr_user->fetch($fk_user);
+    $dol_user = TOnlineAccount::generateToken(new User($db), $fk_user);
 
-    if(! empty($dolibarr_user->email)) {
-        $dolibarr_user->array_options['options_token'] = hash('sha256', $dolibarr_user->email.time());
-    }
-    $dolibarr_user->insertExtraFields();
-    return $dolibarr_user->array_options['options_token'];
+    return array('token' => $dol_user->array_options['options_token']
+                ,'date_token' => date('d/m/Y', $dol_user->array_options['options_date_token']));
 }
 
 

@@ -30,7 +30,7 @@ $object = new Contact($db);
 $soc = new Societe($db);
 $dolibarr_user=new User($db);
 $extrafields = new ExtraFields($db);
-$online_account = new OnlineAccount($db);
+$online_account = new TOnlineAccount($db);
 $form = new Form($db);
 
 // fetch optionals attributes and labels
@@ -59,23 +59,26 @@ if (empty($reshook))
                     'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePassword').'</a>',
                 );
                 $online_account->sendMail($dolibarr_user, 0, $TParams);
-                setEventMessage($langs->trans('onlineaccountResetPwdEmailSent', $dolibarr_user->email));
+                setEventMessage($langs->trans('onlineaccountResetPwdEmailSentTo', $dolibarr_user->email));
             }
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id);
             exit;
             break;
 		case 'create_user':
-			$login = dol_buildlogin($object->lastname, $object->firstname);
-            $pwd = getRandomPassword(false);
-
-            if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($dolibarr_user->email)) {
-                $dolibarr_user->email = 'email@example.com';
-                $object->email = $dolibarr_user->email;     // Just for tmp uses, in create function it will takes the contact email as user email
-            }
-
-            $dolibarr_user->create_from_contact($object, $login);
-            $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
-            if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
+            TOnlineAccount::createUser($object, $dolibarr_user);
+//			$login = dol_buildlogin($object->lastname, $object->firstname);
+//            $pwd = getRandomPassword(false);
+//
+//            if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($dolibarr_user->email)) {
+//                $dolibarr_user->email = 'email@example.com';
+//                $object->email = $dolibarr_user->email;     // Just for tmp uses, in create function it will takes the contact email as user email
+//            }
+//
+//            $dolibarr_user->create_from_contact($object, $login);
+//            $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
+//
+//            // Si la conf n'est pas utilisée, l'utilisateur créé ne sera dans aucun groupes et ne pourra donc pas se connecter
+//            if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
 
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
             exit;
@@ -221,8 +224,9 @@ if(! empty($dolibarr_user->id)) {
                             ,dataType: 'json'
                             ,type: 'POST'
                             ,async: true
-                        }).done(function(token) {
-                            $('#token').text(token);
+                        }).done(function(TData) {
+                            $('#token').text(TData['token']);
+                            $('#date_token').val(TData['date_token']);
                         });
                 });
             });

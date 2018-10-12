@@ -10,7 +10,7 @@ onlineaccount=Compte en ligne
 onlineaccountReinitPassword = Module compte en ligne - Réinitialisation du mot de passe
 
 # SETUP
-onlineaccountDefaultUserGroup = Créer les utilisateurs de un groupe spécifique
+onlineaccountDefaultUserGroup = Créer les utilisateurs dans un groupe spécifique
 ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
@@ -23,8 +23,11 @@ NewPassword = Nouveau mot de passe
 ConfirmNewPassword = Confirmer mot de passe
 PasswordModified = Mot de passe modifié
 InvalidToken = Token incorrect
+EmptyToken = Aucun token n'a été généré pour cet utilisateur
 EmptyPassword = Le champ 'mot de passe' ne peut pas être vide
 WrongPasswordConfirm = Les deux mots de passe renseignés sont différents
 ConfirmResetPwd = Réinitialiser mot de passe
 ResetPwd = Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet utilisateur ?
-onlineaccountResetPwdEmailSent = Le mail a été envoyé à '%s' pour réinitialiser le mot de passe
+onlineaccountResetPwdEmailSentTo = Le mail a été envoyé à '%s' pour réinitialiser le mot de passe
+UserAlreadyExists = L'utilisateur existe déjà
+UserCreationProblem = Problème pendant la création de l'utilisateur

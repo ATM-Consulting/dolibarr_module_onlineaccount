@@ -1,9 +1,66 @@
 <?php
 
-class OnlineAccount {
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+if(! class_exists('User')) require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+if(! class_exists('Contact')) require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+
+class TOnlineAccount {
 
     function __construct(&$db) {
         $this->db = &$db;
+    }
+    
+    static function createUser(Contact $object, User &$dolibarr_user) {
+        global $conf, $user;
+
+        $login = dol_buildlogin($object->lastname, $object->firstname);
+        $pwd = getRandomPassword(false);
+
+        if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($object->email)) {
+            $dolibarr_user->email = 'email@example.com';
+            $object->email = $dolibarr_user->email;     // Just for tmp uses, in create function it will takes the contact email as user email
+        }
+
+        $res = $dolibarr_user->create_from_contact($object, $login);
+        if($res <= 0) return -1;
+
+        $res = $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
+        if($res <= 0) return -2;
+
+        // Si la conf n'est pas utilisée, l'utilisateur créé ne sera dans aucun groupes et ne pourra donc pas se connecter
+        if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
+
+        $res = self::generateToken($dolibarr_user);
+        if(! is_object($res) && $res <= 0) return -3;
+
+        return 1;
+    }
+
+    /**
+     * 
+     * @param User $dol_user
+     * @param type $fk_user     if not empty, used to fetch User
+     * @return \User
+     */
+    static function generateToken(&$dol_user, $fk_user = '') {
+        global $db, $conf;
+
+        if(empty($dol_user->id)) {
+            if(empty($fk_user)) return -1;
+
+            $dol_user = new User($db);
+            $dol_user->fetch($fk_user);
+        }
+
+        if(empty($dol_user->email)) return -2;
+
+        $dol_user->array_options['options_token'] = hash('sha256', $dol_user->email.time());
+        $dol_user->array_options['options_date_token'] = dol_time_plus_duree(dol_now(), empty($conf->global->ONLINE_ACCOUNT_TOKEN_DURATION_DAY) ? 0 : $conf->global->ONLINE_ACCOUNT_TOKEN_DURATION_DAY, 'd');
+        $dol_user->insertExtraFields();
+        return $dol_user;
     }
 
     function getEMailTemplate($type_template, $user, $outputlangs, $id = 0, $active = 1) {
@@ -86,8 +143,13 @@ class OnlineAccount {
         $subject = '';
         $actionmsg = '';
         $actionmsg2 = '';
-        $modelmail = 'password_reinit';
+        $modelmail = empty($TParams['model']) ? 'password_reinit' : $TParams['model'];
         $action = 'send';
+
+        if(empty($user->id) && ! empty($TParams['user'])) {
+            $user = $TParams['user'];
+        }
+        $email_from = $user->email;
 
         $arraydefaultmessage = $this->getEMailTemplate($modelmail, $user, $langs, $fk_model);
 
@@ -117,7 +179,7 @@ class OnlineAccount {
             $langs->load("commercial");
 
 
-            $from = $user->getFullName($langs).' <'.$user->email.'>';
+            $from = $user->getFullName($langs).' <'.$email_from.'>';
             $replyto = $from;
 
             $message = $arraydefaultmessage['content'];
@@ -141,11 +203,12 @@ class OnlineAccount {
             }
 
             // Send mail
-            $mailfile = new CMailFile($subject, $sendto, $from, $message, '', '', '', $sendtocc, $sendtobcc, '', -1, '', '', $trackid);
+            $mailfile = new CMailFile($subject, $sendto, $from, $message, array(), '', '', $sendtocc, $sendtobcc, '', -1, '', '', $trackid);
             if($mailfile->error) {
                 echo 'ERR '.$mailfile->error.'<br />';
                 dol_syslog($mailfile->error, LOG_ERR);
                 $action = 'presend';
+                return -1;
             }
             else {
                 $result = $mailfile->sendfile();
@@ -162,6 +225,7 @@ class OnlineAccount {
 
                     echo 'ERR2 '.$mesg.'<br />';
                     dol_syslog($mesg, LOG_ERR);
+                    return -2;
                 }
             }
         }
@@ -170,7 +234,9 @@ class OnlineAccount {
             setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("MailTo")), null, 'warnings');
             dol_syslog('Try to send email with no recipiend defined', LOG_WARNING);
             $action = 'presend';
+            return -3;
         }
+        return 1;
     }
 
 }
