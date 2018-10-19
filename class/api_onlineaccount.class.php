@@ -106,6 +106,32 @@ class onlineaccount extends DolibarrApi
             return array('success' => array('code' => 201, 'result' => $this->get($this->user->id)));
         }
     }
+
+    /**
+     * Generate Token and validity date
+     * 
+     * Allow to generate a new Token and validity date for an user
+     * 
+     * @param   int $id Id of user
+     * @return  array
+     * 
+     * @url     POST /generate_token
+     * @throws  RestException
+     */
+    function generateToken($id) {
+        global $langs;
+
+        $res = $this->user->fetch($id);
+        if($res <= 0) {
+            throw new RestException(404, 'No user found');  // Not Found
+        }
+
+        $res = TOnlineAccount::generateToken($this->user);
+        if(! is_object($res) && $res <= 0) {
+            throw new RestException(400, $langs->transnoentities('GenerateTokenProblem'));  // Bad Request
+        }
+        return array('success' => array('code' => 201, 'result' => $this->get($this->user->id)));
+    }
     
     /**
      * Get Online Account info

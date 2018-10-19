@@ -31,3 +31,4 @@ ResetPwd = Êtes-vous sûr de vouloir réinitialiser le mot de passe de cet util
 onlineaccountResetPwdEmailSentTo = Le mail a été envoyé à '%s' pour réinitialiser le mot de passe
 UserAlreadyExists = L'utilisateur existe déjà
 UserCreationProblem = Problème pendant la création de l'utilisateur
+GenerateTokenProblem = Problème pendant la génération du token de l'utilisateur
