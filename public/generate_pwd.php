@@ -103,6 +103,16 @@ llxHeader('',$title);
     align-items: center;
 }
 </style>
+<?php
+if($conf->breadcrumb->enabled) {
+    // Remove BreadCrumb div
+    print ' <script type="text/javascript">
+                $(document).ready(function() {
+                    $("html").children("div").remove();
+                });
+            </script>';
+}
+?>
 <div class="fichecenter">
     
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">

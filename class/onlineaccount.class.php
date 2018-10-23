@@ -6,6 +6,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 if(! class_exists('User')) require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 if(! class_exists('Contact')) require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
+if(! class_exists('Societe')) require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
 class TOnlineAccount {
 
@@ -137,7 +138,7 @@ class TOnlineAccount {
     }
 
     function sendMail(&$object, $fk_model = 0, $TParams = array()) {
-        global $user, $langs, $conf;
+        global $user, $langs, $conf, $mysoc;
 
         $trackid = 'inv'.$object->id;
         $subject = '';
@@ -165,6 +166,14 @@ class TOnlineAccount {
         $formmail->setSubstitFromObject($object, $langs);
         $formmail->substit['__ONLINE_ACCOUNT_USER__'] = $object->login;
 		$formmail->substit['__ONLINE_ACCOUNT_LINK__'] = $TParams['OnlineAccountLink'];
+		$formmail->substit['__MYCOMPANY_NAME__'] = $mysoc->nom;
+        $formmail->substit['__COMPANY_CUSTOMER_CODE__'] = '';
+        if(! empty($object->socid)) {
+            $soc = new Societe($object->db);
+            $soc->fetch($object->socid);
+
+            $formmail->substit['__COMPANY_CUSTOMER_CODE__'] = $soc->code_client;
+        }
 
         if(empty($To)) {
             if(!empty($object->email)) $To[] = $object->email;

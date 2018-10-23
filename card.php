@@ -66,19 +66,6 @@ if (empty($reshook))
             break;
 		case 'create_user':
             TOnlineAccount::createUser($object, $dolibarr_user);
-//			$login = dol_buildlogin($object->lastname, $object->firstname);
-//            $pwd = getRandomPassword(false);
-//
-//            if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($dolibarr_user->email)) {
-//                $dolibarr_user->email = 'email@example.com';
-//                $object->email = $dolibarr_user->email;     // Just for tmp uses, in create function it will takes the contact email as user email
-//            }
-//
-//            $dolibarr_user->create_from_contact($object, $login);
-//            $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
-//
-//            // Si la conf n'est pas utilisée, l'utilisateur créé ne sera dans aucun groupes et ne pourra donc pas se connecter
-//            if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
 
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
             exit;
@@ -119,6 +106,18 @@ if (empty($reshook))
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id);
             exit;
             break;
+        case 'send_mail_first_connection':
+            if(! empty($confirm)) {
+                $TParams = array(
+                    'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePassword').'</a>',
+                    'model' => 'first_connection'
+                );
+                $online_account->sendMail($dolibarr_user, 0, $TParams);
+                setEventMessage($langs->trans('onlineaccountResetPwdEmailSentTo', $dolibarr_user->email));
+            }
+            header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id);
+            exit;
+            break;
 	}
 }
 
@@ -131,7 +130,10 @@ $title=$langs->trans("onlineaccount");
 llxHeader('', $title, '', '', 0, 0, array(), $TArrayOfCss);
 
 if($action == 'genPwd') {
-    echo $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$id, $langs->trans('ConfirmResetPwd'), $langs->trans('ResetPwd'), 'send_mail_new_password', '', '', 1);
+    echo $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$id, $langs->trans('ResetPwd'), $langs->trans('ConfirmResetPwd'), 'send_mail_new_password', '', '', 1);
+}
+else if($action == 'firstConnection') {
+    echo $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$id, $langs->trans('FirstConnection'), $langs->trans('ConfirmFirstConnection'), 'send_mail_first_connection', '', '', 1);
 }
 
 $head = contact_prepare_head($object);
@@ -288,6 +290,7 @@ print '<div class="tabsAction">';
 if($action != 'edit') {
     if(empty($object->user_id)) print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=create_user">'.$langs->trans('CreateUser').'</a>';
     else {
+        print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=firstConnection">'.$langs->trans('FirstConnection').'</a>';
         print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=genPwd">'.$langs->trans('GeneratePassword').'</a>';
         print '<a class="butAction" href="'.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit">'.$langs->trans('Modify').'</a>';
     }

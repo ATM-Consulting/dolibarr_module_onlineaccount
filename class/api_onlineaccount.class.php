@@ -151,6 +151,7 @@ class onlineaccount extends DolibarrApi
             $user = $this->_cleanObjectDatas($this->user);
             $TRes = array(
                 'active' => empty($user->statut) ? 0 : 1
+                ,'id' => $user->id
                 ,'login' => $user->login
                 ,'pass_crypted' => $user->pass_indatabase_crypted
                 ,'token' => $user->array_options['options_token']
@@ -191,6 +192,43 @@ class onlineaccount extends DolibarrApi
         $online_account = new TOnlineAccount($this->db);
         $TParams = array(
             'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$this->user->array_options['options_token'].'">'.$langs->transnoentities('GeneratePassword').'</a>'
+            ,'user' => &DolibarrApiAccess::$user
+        );
+
+        $res = $online_account->sendMail($this->user, 0, $TParams);
+        if($res > 0) {
+            return array('success' => array('code' => 200, 'message' => $langs->transnoentities('onlineaccountResetPwdEmailSentTo', $this->user->email)));
+        }
+
+        throw new RestException(400, 'No mail sent.', array('return_code' => $res));  // Bad Request
+    }
+
+    /**
+     * Set Online Account password
+     *
+     * Send en email to set an Online Account password
+     *
+     * @param int $id Id of user
+     * @return array
+     *
+     * @url     POST /firstConnection
+     * @throws RestException
+     */
+    function firstConnection($id) {
+        global $langs;
+
+        $res = $this->user->fetch($id);
+        if($res <= 0) {
+            throw new RestException(404, 'No user found');  // Not Found
+        }
+        if(empty($this->user->array_options['options_token'])) {
+            throw new RestException(204, $langs->transnoentities('EmptyToken'));  // No Content
+        }
+
+        $online_account = new TOnlineAccount($this->db);
+        $TParams = array(
+            'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$this->user->array_options['options_token'].'">'.$langs->transnoentities('GeneratePassword').'</a>'
+            ,'model' => 'first_connection'
             ,'user' => &DolibarrApiAccess::$user
         );
 

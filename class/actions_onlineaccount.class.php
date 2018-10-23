@@ -100,6 +100,7 @@ class Actionsonlineaccount
 		$langs->load('onlineaccount@onlineaccount');
 
 		$this->results['password_reinit'] = $langs->trans('onlineaccountReinitPassword');
+		$this->results['first_connection'] = $langs->trans('onlineaccountFirstConnection');
 
 		return 0;
 	}
