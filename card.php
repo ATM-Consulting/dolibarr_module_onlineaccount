@@ -65,6 +65,9 @@ if (empty($reshook))
             exit;
             break;
 		case 'create_user':
+			if ($conf->multicompany->enabled && $conf->global->MULTICOMPANY_TRANSVERSE_MODE) {
+				$dolibarr_user->entity=1;
+			}
             TOnlineAccount::createUser($object, $dolibarr_user);
 
             header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
