@@ -30,14 +30,12 @@ class TOnlineAccount {
 
         $res = $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
         
-        if($res!=$pwd) {
-        	if ($res <= 0) {
-        		return -2;
-        	}
+        if($res!=$pwd && $res <= 0) {
+       		return -2;
         }
 
         // Si la conf n'est pas utilisée, l'utilisateur créé ne sera dans aucun groupes et ne pourra donc pas se connecter
-        if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $conf->entity);
+        if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $dolibarr_user->entity);
 
         $res = self::generateToken($dolibarr_user);
         if(! is_object($res) && $res <= 0) return -3;

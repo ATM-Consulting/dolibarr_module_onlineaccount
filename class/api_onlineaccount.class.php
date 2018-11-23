@@ -81,12 +81,13 @@ class onlineaccount extends DolibarrApi
      * Send en email to reset Online Account password
      * 
      * @param   int $fk_contact Id of contact
+     * @param   int $entity Entity of user and group to set
      * @return  array
      * 
      * @url     POST /create
      * @throws  RestException
      */
-    function createOnlineAccount($fk_contact) {
+    function createOnlineAccount($fk_contact, $entity) {
         global $langs;
 
         $res = $this->contact->fetch($fk_contact);
@@ -99,7 +100,8 @@ class onlineaccount extends DolibarrApi
             return array('success' => array('code' => 200, 'message' => $langs->transnoentities('UserAlreadyExists') , 'result' => $this->get($this->contact->user_id)));
         }
         else {
-            $res = TOnlineAccount::createUser($this->contact, $this->user);
+        	$this->user->entity = $entity;
+        	$res = TOnlineAccount::createUser($this->contact, $this->user);
             if($res <= 0) {
                 throw new RestException(400, $langs->transnoentities('UserCreationProblem'));  // Bad Request
             }
