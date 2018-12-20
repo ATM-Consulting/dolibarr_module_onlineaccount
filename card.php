@@ -68,11 +68,17 @@ if (empty($reshook))
 			if ($conf->multicompany->enabled && $conf->global->MULTICOMPANY_TRANSVERSE_MODE) {
 				$dolibarr_user->entity=1;
 			}
-            TOnlineAccount::createUser($object, $dolibarr_user);
-
-            header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
-            exit;
-            break;
+            $result = TOnlineAccount::createUser($object, $dolibarr_user);
+            if ($result<0) {
+            	setEventMessages($dolibarr_user->error,$dolibarr_user->errors,'errors');
+            	header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id);
+            	exit;
+            	break;
+            } else {
+	            header('Location: '.$_SERVER['PHP_SELF'].'?id='.$id.'&action=edit');
+	            exit;
+	            break;
+            }
         case 'save':
             $error = 0;
             $db->begin();

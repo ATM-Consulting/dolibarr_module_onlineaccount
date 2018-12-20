@@ -17,7 +17,7 @@ class TOnlineAccount {
     static function createUser(Contact $object, User &$dolibarr_user) {
         global $conf, $user;
 
-        $login = dol_buildlogin($object->lastname, $object->firstname);
+        $login = dol_buildlogin($object->lastname.'.'.$object->id, $object->firstname);
         $pwd = getRandomPassword(false);
 
         if(! empty($conf->global->USER_MAIL_REQUIRED) && empty($object->email)) {
