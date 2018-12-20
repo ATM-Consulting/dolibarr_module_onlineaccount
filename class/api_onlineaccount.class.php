@@ -103,7 +103,7 @@ class onlineaccount extends DolibarrApi
         	$this->user->entity = $entity;
         	$res = TOnlineAccount::createUser($this->contact, $this->user);
             if($res <= 0) {
-                throw new RestException(400, $langs->transnoentities('UserCreationProblem'));  // Bad Request
+            	throw new RestException(400, $langs->transnoentities('UserCreationProblem').$this->user->error);  // Bad Request
             }
             return array('success' => array('code' => 201, 'result' => $this->get($this->user->id)));
         }
