@@ -20,6 +20,7 @@ ParamHelp=Le contenu de l'aide
 DateToken = Date limite token
 GeneratePassword = Réinitialiser mot de passe
 GeneratePasswordTitle = Réinitialisation du mot de passe
+GeneratePasswordTitleCreate = Créer un mot de passe
 NewPassword = Nouveau mot de passe
 ConfirmNewPassword = Confirmer mot de passe
 PasswordModified = Mot de passe modifié

@@ -31,8 +31,8 @@ if(empty($action)) {
     $sql = 'SELECT fk_object as fk_user';
     $sql .= ' FROM '.MAIN_DB_PREFIX.'user_extrafields';
     $sql .= " WHERE token = '".$db->escape($token)."'";
-    $sql .= ' AND date_token >= NOW()';
-
+    $sql .= ' AND date_token >= DATE_FORMAT(NOW(), \'%Y-%m-%d\')';
+	
     $resql = $db->query($sql);
     if($resql) {
         if($obj = $db->fetch_object($resql)) $id = $obj->fk_user;
@@ -92,7 +92,11 @@ $title=$langs->trans("GeneratePassword");
 llxHeader('',$title);
 ?>
 <style type="text/css">
-
+	div.title {
+		width:100%;
+		text-align:center;
+	}
+	
 #conteneur {
     margin: 85px auto 0 auto;
 	height: 200px;
@@ -121,7 +125,7 @@ if($conf->breadcrumb->enabled) {
 <input type="hidden" name="token" value="<?php echo $token ?>" />
 
     <div id="conteneur">
-        <div><h2><?php echo $langs->trans('GeneratePasswordTitle'); ?></h2></div>
+        <div class="title"><h2><?php if (empty($dolibarr_user->datelastlogin)) echo $langs->trans('GeneratePasswordTitleCreate'); else echo $langs->trans('GeneratePasswordTitle'); ?></h2></div>
 
         <div><?php echo $langs->trans('NewPassword'); ?></div>
         <div><input type="password" name="pwd" /></div>
