@@ -118,7 +118,7 @@ if (empty($reshook))
         case 'send_mail_first_connection':
             if(! empty($confirm)) {
                 $TParams = array(
-                    'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePasswordTitleCreate').'</a>',
+                    'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePasswordCreate').'</a>',
                     'model' => 'first_connection'
                 );
                 $online_account->sendMail($dolibarr_user, 0, $TParams);
