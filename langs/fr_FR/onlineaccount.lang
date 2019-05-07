@@ -36,3 +36,9 @@ onlineaccountResetPwdEmailSentTo = Le mail a été envoyé à '%s' pour réiniti
 UserAlreadyExists = L'utilisateur existe déjà
 UserCreationProblem = Problème pendant la création de l'utilisateur
 GenerateTokenProblem = Problème pendant la génération du token de l'utilisateur
+
+
+ONLINEACCOUNT_BACK_TO_URL=URL d'accès au compte en ligne pour afficher un lien sur la page de "Réinitialisation du mot de passe"
+ONLINEACCOUNT_BACK_TO_URL_LABEL=Libellé du lien d'accès au compte en ligne
+
+onlineaccount_backtourl_label=Accès compte en ligne

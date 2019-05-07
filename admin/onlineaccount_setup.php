@@ -116,6 +116,9 @@ print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'
 print '</form>';
 print '</td></tr>';
 
+_print_input_form_part('ONLINEACCOUNT_BACK_TO_URL');
+_print_input_form_part('ONLINEACCOUNT_BACK_TO_URL_LABEL');
+
 // Example with color
 //_print_input_form_part('CONSTNAME', 'ParamLabel', 'ParamDesc', array('type'=>'color'),'input','ParamHelp');
 

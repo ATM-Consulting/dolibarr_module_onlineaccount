@@ -133,7 +133,16 @@ if($conf->breadcrumb->enabled) {
         <div><?php echo $langs->trans('ConfirmNewPassword'); ?></div>
         <div><input type="password" name="pwd_confirm" /></div>
 
-        <div><input class="butAction" type="submit" value="<?php echo $langs->trans('Save'); ?>" /></div>
+        <div>
+            <input class="butAction" type="submit" value="<?php echo $langs->trans('Save'); ?>" />
+            <?php
+                if (!empty($dolibarr_user->datelastlogin) && !empty($conf->global->ONLINEACCOUNT_BACK_TO_URL))
+                {
+                    $label = (!empty($conf->global->ONLINEACCOUNT_BACK_TO_URL_LABEL)) ? $conf->global->ONLINEACCOUNT_BACK_TO_URL_LABEL : $langs->trans('onlineaccount_backtourl_label');
+                    print '<a href="'.$conf->global->ONLINEACCOUNT_BACK_TO_URL.'" class="butAction" >'.$label.'</a>';
+                }
+            ?>
+        </div>
     </div>
 </form>
 
