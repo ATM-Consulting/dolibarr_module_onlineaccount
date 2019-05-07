@@ -19,8 +19,9 @@ ParamHelp=Le contenu de l'aide
 # CARD
 DateToken = Date limite token
 GeneratePassword = Réinitialiser mot de passe
+GeneratePasswordCreate = Créer un mot de passe
 GeneratePasswordTitle = Réinitialisation du mot de passe
-GeneratePasswordTitleCreate = Créer un mot de passe
+GeneratePasswordTitleCreate = Création d'un mot de passe
 NewPassword = Nouveau mot de passe
 ConfirmNewPassword = Confirmer mot de passe
 PasswordModified = Mot de passe modifié
