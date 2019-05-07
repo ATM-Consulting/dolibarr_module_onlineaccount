@@ -71,6 +71,7 @@ switch ($action) {
 
         if(empty($errorMsg)) {
             setEventMessages($langs->trans("PasswordModified"), null, 'mesgs');
+            $dolibarr_user->setValueFrom('datelastlogin', dol_now(), '', '', 'date');
             $db->commit();
         }
         else {
@@ -134,9 +135,9 @@ if($conf->breadcrumb->enabled) {
         <div><input type="password" name="pwd_confirm" /></div>
 
         <div>
-            <input class="butAction" type="submit" value="<?php echo $langs->trans('Save'); ?>" />
+            <input class="butAction" type="submit" value="<?php echo $langs->tra:ns('Save'); ?>" />
             <?php
-                if (!empty($dolibarr_user->datelastlogin) && !empty($conf->global->ONLINEACCOUNT_BACK_TO_URL))
+                if (!empty($conf->global->ONLINEACCOUNT_BACK_TO_URL) && !empty($dolibarr_user->datelastlogin))
                 {
                     $label = (!empty($conf->global->ONLINEACCOUNT_BACK_TO_URL_LABEL)) ? $conf->global->ONLINEACCOUNT_BACK_TO_URL_LABEL : $langs->trans('onlineaccount_backtourl_label');
                     print '<a href="'.$conf->global->ONLINEACCOUNT_BACK_TO_URL.'" class="butAction" >'.$label.'</a>';
