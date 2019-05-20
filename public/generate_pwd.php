@@ -135,7 +135,7 @@ if($conf->breadcrumb->enabled) {
         <div><input type="password" name="pwd_confirm" /></div>
 
         <div>
-            <input class="butAction" type="submit" value="<?php echo $langs->tra:ns('Save'); ?>" />
+            <input class="butAction" type="submit" value="<?php echo $langs->trans('Save'); ?>" />
             <?php
                 if (!empty($conf->global->ONLINEACCOUNT_BACK_TO_URL) && !empty($dolibarr_user->datelastlogin))
                 {
