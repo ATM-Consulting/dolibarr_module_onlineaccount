@@ -54,6 +54,8 @@ if (empty($reshook))
 	$error = 0;
 	switch ($action) {
         case 'send_mail_new_password':
+	    if (empty($dolibarr_user->array_options['options_token'])) TOnlineAccount::generateToken($dolibarr_user);
+
             if(! empty($confirm)) {
                 $TParams = array(
                     'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePassword').'</a>',
@@ -116,6 +118,8 @@ if (empty($reshook))
             exit;
             break;
         case 'send_mail_first_connection':
+	    if (empty($dolibarr_user->array_options['options_token'])) TOnlineAccount::generateToken($dolibarr_user);
+
             if(! empty($confirm)) {
                 $TParams = array(
                     'OnlineAccountLink' => '<a href="'.dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token'].'">'.$langs->trans('GeneratePasswordCreate').'</a>',
