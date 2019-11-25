@@ -15,8 +15,15 @@ switch($action) {
 function _generate_token(&$db, $fk_user) {
     $dol_user = TOnlineAccount::generateToken(new User($db), $fk_user);
 
-    return array('token' => $dol_user->array_options['options_token']
-                ,'date_token' => date('d/m/Y', $dol_user->array_options['options_date_token']));
+    $dt = new DateTime('@'.$dol_user->array_options['options_date_token']);
+
+    return array(
+        'token' => $dol_user->array_options['options_token'],
+        'date_token' => date('d/m/Y', $dt->format('d/m/Y')),
+        'date_tokenday' => date('d', $dt->format('d')),
+        'date_tokenmonth' => date('m', $dt->format('m')),
+        'date_tokenyear' => date('Y', $dt->format('Y'))
+    );
 }
 
 

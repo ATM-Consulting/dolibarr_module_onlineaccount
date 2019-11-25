@@ -242,6 +242,9 @@ if(! empty($dolibarr_user->id)) {
                         }).done(function(TData) {
                             $('#token').text(TData['token']);
                             $('#date_token').val(TData['date_token']);
+                            $('#date_tokenday').val(TData['date_tokenday']);
+                            $('#date_tokenmonth').val(TData['date_tokenmonth']);
+                            $('#date_tokenyear').val(TData['date_tokenyear']);
                         });
                 });
             });
