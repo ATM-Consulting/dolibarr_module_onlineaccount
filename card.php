@@ -281,7 +281,9 @@ if(! empty($dolibarr_user->id)) {
         print '<td style="padding-left: 15px;">'.(empty($dolibarr_user->array_options['options_token']) ? '' : dol_buildpath('/onlineaccount/public/generate_pwd.php', 2).'?token='.$dolibarr_user->array_options['options_token']).'</td></tr>';
 
         // Date Token
-        print '<tr><td>'.$langs->trans("DateToken").'</td><td colspan="2">'.date('d/m/Y', strtotime($dolibarr_user->array_options['options_date_token'])).'</td></tr>';
+        $date_token = $dolibarr_user->array_options['options_date_token'];
+        if(! is_int($date_token)) $date_token = strtotime($date_token);
+        print '<tr><td>'.$langs->trans("DateToken").'</td><td colspan="2">'.date('d/m/Y', $date_token).'</td></tr>';
 
         // Email
         print '<tr><td>'.$langs->trans("Email").'</td><td colspan="2">';
@@ -312,7 +314,7 @@ else {
     print '<input class="butAction" type="submit" value="'.$langs->trans('Save').'"/>';
     print '</form>';
 }
-    
+
 print '</div>';
 
 llxFooter();
