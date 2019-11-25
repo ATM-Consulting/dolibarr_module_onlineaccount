@@ -19,10 +19,10 @@ function _generate_token(&$db, $fk_user) {
 
     return array(
         'token' => $dol_user->array_options['options_token'],
-        'date_token' => date('d/m/Y', $dt->format('d/m/Y')),
-        'date_tokenday' => date('d', $dt->format('d')),
-        'date_tokenmonth' => date('m', $dt->format('m')),
-        'date_tokenyear' => date('Y', $dt->format('Y'))
+        'date_token' => $dt->format('d/m/Y'),
+        'date_tokenday' => $dt->format('d'),
+        'date_tokenmonth' => $dt->format('m'),
+        'date_tokenyear' => $dt->format('Y')
     );
 }
 
