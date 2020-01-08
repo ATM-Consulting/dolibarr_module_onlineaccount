@@ -20,6 +20,7 @@ $action = GETPOST('action', 'alpha', 2);    // Only POST method
 $soc = new Societe($db);
 $dolibarr_user = new User($db);
 $extrafields = new ExtraFields($db);
+$pwd = GETPOST('pwd');
 
 $conf->dol_hide_leftmenu=1;
 $conf->dol_hide_topmenu=1;
@@ -32,7 +33,7 @@ if(empty($action)) {
     $sql .= ' FROM '.MAIN_DB_PREFIX.'user_extrafields';
     $sql .= " WHERE token = '".$db->escape($token)."'";
     $sql .= ' AND date_token >= DATE_FORMAT(NOW(), \'%Y-%m-%d\')';
-	
+
     $resql = $db->query($sql);
     if($resql) {
         if($obj = $db->fetch_object($resql)) $id = $obj->fk_user;
@@ -51,6 +52,7 @@ $extralabels=$extrafields->fetch_name_optionals_label($dolibarr_user->table_elem
 
 if(! empty($id)) $dolibarr_user->fetch($id);
 
+
 /*
  * Actions
  */
@@ -58,8 +60,8 @@ $error = 0;
 $errorMsg = '';
 switch ($action) {
     case 'update_pwd':
-        if(empty(GETPOST('pwd'))) $errorMsg = $langs->trans('EmptyPassword');
-        else if(GETPOST('pwd') != GETPOST('pwd_confirm')) $errorMsg = $langs->trans('WrongPasswordConfirm');
+        if(empty($pwd)) $errorMsg = $langs->trans('EmptyPassword');
+        else if($pwd != GETPOST('pwd_confirm')) $errorMsg = $langs->trans('WrongPasswordConfirm');
 
         $db->begin();
 
@@ -90,36 +92,11 @@ switch ($action) {
 $form = new Form($db);
 
 $title=$langs->trans("GeneratePassword");
-llxHeader('',$title);
+include __DIR__ . '/header.tpl.php';
+
 ?>
-<style type="text/css">
-	div.title {
-		width:100%;
-		text-align:center;
-	}
-	
-#conteneur {
-    margin: 85px auto 0 auto;
-	height: 200px;
-    width: 360px;
-	display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-}
-</style>
-<?php
-if($conf->breadcrumb->enabled) {
-    // Remove BreadCrumb div
-    print ' <script type="text/javascript">
-                $(document).ready(function() {
-                    $("html").children("div").remove();
-                });
-            </script>';
-}
-?>
-<div class="fichecenter">
-    
+<div class="container">
+
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
 <input type="hidden" name="action" value="update_pwd" />
 <input type="hidden" name="id" value="<?php echo $dolibarr_user->id ?>" />
@@ -150,4 +127,5 @@ if($conf->breadcrumb->enabled) {
 </div></div>
 
 <?php
-llxFooter();
+
+include __DIR__ . '/footer.tpl.php';
