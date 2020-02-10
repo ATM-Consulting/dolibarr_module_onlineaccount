@@ -13,7 +13,7 @@ class TOnlineAccount {
     function __construct(&$db) {
         $this->db = &$db;
     }
-    
+
     static function createUser(Contact $object, User &$dolibarr_user) {
         global $conf, $user;
 
@@ -29,13 +29,21 @@ class TOnlineAccount {
         if($res <= 0) return -1;
 
         $res = $dolibarr_user->setPassword($user, $pwd, 0, 0, 1);
-        
+
         if($res!=$pwd && $res <= 0) {
        		return -2;
         }
 
         // Si la conf n'est pas utilisée, l'utilisateur créé ne sera dans aucun groupes et ne pourra donc pas se connecter
-        if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $dolibarr_user->entity);
+        if(! empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP)){
+
+			$entityForGroup = $dolibarr_user->entity;
+			if(!empty($conf->multicompany->enabled) && !empty($conf->global->ONLINE_ACCOUNT_DEFAULT_ENTITY) && intval($conf->global->ONLINE_ACCOUNT_DEFAULT_ENTITY) > 0) {
+				$entityForGroup = intval($conf->global->ONLINE_ACCOUNT_DEFAULT_ENTITY);
+			}
+
+			$dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $entityForGroup);
+		}
 
         $res = self::generateToken($dolibarr_user);
         if(! is_object($res) && $res <= 0) return -3;
@@ -44,7 +52,7 @@ class TOnlineAccount {
     }
 
     /**
-     * 
+     *
      * @param User $dol_user
      * @param type $fk_user     if not empty, used to fetch User
      * @return \User

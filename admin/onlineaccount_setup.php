@@ -59,7 +59,7 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
@@ -107,7 +107,7 @@ $var=!$var;
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans('onlineaccountDefaultUserGroup').'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="300">';
+print '<td align="right" width="300">';
 print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="set_ONLINE_ACCOUNT_DEFAULT_USER_GROUP">';
@@ -115,6 +115,25 @@ print $form->select_dolgroups($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, 
 print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
 print '</form>';
 print '</td></tr>';
+
+
+if(!empty($conf->multicompany->enabled) && !empty($mc)){
+
+	/**
+	 * @var $mc ActionsMulticompany
+	 */
+	print '<tr '.$bc[$var].'>';
+	print '<td>'.$langs->trans('onlineaccountDefaultDefautEntity').'</td>';
+	print '<td align="center" width="20">&nbsp;</td>';
+	print '<td align="right" width="300">';
+	print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+	print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+	print '<input type="hidden" name="action" value="set_ONLINE_ACCOUNT_DEFAULT_ENTITY">';
+	print  $mc->select_entities($conf->global->ONLINE_ACCOUNT_DEFAULT_ENTITY, 'ONLINE_ACCOUNT_DEFAULT_ENTITY', '', false, false, 1);
+	print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
+	print '</form>';
+	print '</td></tr>';
+}
 
 _print_input_form_part('ONLINEACCOUNT_BACK_TO_URL');
 _print_input_form_part('ONLINEACCOUNT_BACK_TO_URL_LABEL');
@@ -151,7 +170,7 @@ function _print_on_off($confkey, $title = false, $desc ='')
 {
     global $var, $bc, $langs, $conf;
     $var=!$var;
-    
+
     print '<tr '.$bc[$var].'>';
     print '<td>'.($title?$title:$langs->trans($confkey));
     if(!empty($desc))
@@ -173,41 +192,41 @@ function _print_input_form_part($confkey, $title = false, $desc ='', $metas = ar
 {
     global $var, $bc, $langs, $conf, $db;
     $var=!$var;
-    
+
     $form=new Form($db);
-    
+
     $defaultMetas = array(
         'name' => $confkey
     );
-    
+
     if($type!='textarea'){
         $defaultMetas['type']   = 'text';
         $defaultMetas['value']  = $conf->global->{$confkey};
     }
-    
-    
+
+
     $metas = array_merge ($defaultMetas, $metas);
     $metascompil = '';
     foreach ($metas as $key => $values)
     {
         $metascompil .= ' '.$key.'="'.$values.'" ';
     }
-    
+
     print '<tr '.$bc[$var].'>';
     print '<td>';
-    
+
     if(!empty($help)){
         print $form->textwithtooltip( ($title?$title:$langs->trans($confkey)) , $langs->trans($help),2,1,img_help(1,''));
     }
     else {
         print $title?$title:$langs->trans($confkey);
     }
-    
+
     if(!empty($desc))
     {
         print '<br><small>'.$langs->trans($desc).'</small>';
     }
-    
+
     print '</td>';
     print '<td align="center" width="20">&nbsp;</td>';
     print '<td align="right" width="300">';
@@ -220,7 +239,7 @@ function _print_input_form_part($confkey, $title = false, $desc ='', $metas = ar
     else {
         print '<input '.$metascompil.'  />';
     }
-    
+
     print '<input type="submit" class="butAction" value="'.$langs->trans("Modify").'">';
     print '</form>';
     print '</td></tr>';

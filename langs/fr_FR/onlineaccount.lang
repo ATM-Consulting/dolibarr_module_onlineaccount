@@ -15,6 +15,7 @@ onlineaccountDefaultUserGroup = Créer les utilisateurs dans un groupe spécifiq
 ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
+onlineaccountDefaultDefautEntity=Entité à utiliser pour le groupe spécifique, laisser vide pour utiliser l'entité du contact.
 
 # CARD
 DateToken = Date limite token
