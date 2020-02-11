@@ -135,6 +135,9 @@ if(!empty($conf->multicompany->enabled) && !empty($mc)){
 	print '</td></tr>';
 }
 
+
+_print_on_off('ONLINE_GENERATE_USER_API_KEY');
+
 _print_input_form_part('ONLINEACCOUNT_BACK_TO_URL');
 _print_input_form_part('ONLINEACCOUNT_BACK_TO_URL_LABEL');
 

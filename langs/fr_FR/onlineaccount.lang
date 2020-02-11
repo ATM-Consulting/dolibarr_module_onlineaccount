@@ -16,6 +16,7 @@ ParamLabel=Nom du paramètre
 ParamDesc=Une description si besoin
 ParamHelp=Le contenu de l'aide
 onlineaccountDefaultDefautEntity=Entité à utiliser pour le groupe spécifique, laisser vide pour utiliser l'entité du contact.
+ONLINE_GENERATE_USER_API_KEY=Lors de la création du compte utilisateur générer une clé API
 
 # CARD
 DateToken = Date limite token

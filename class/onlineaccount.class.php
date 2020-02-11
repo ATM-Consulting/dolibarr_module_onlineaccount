@@ -45,6 +45,13 @@ class TOnlineAccount {
 			$dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $entityForGroup);
 		}
 
+		if(empty($dolibarr_user->api_key) && !empty($conf->global->ONLINE_GENERATE_USER_API_KEY)){
+			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			$generatedApiKey=getRandomPassword(true);
+			$dolibarr_user->api_key = $generatedApiKey;
+			$res = $dolibarr_user->update($user);
+		}
+
         $res = self::generateToken($dolibarr_user);
         if(! is_object($res) && $res <= 0) return -3;
 
