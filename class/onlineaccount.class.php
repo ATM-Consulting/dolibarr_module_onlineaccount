@@ -43,6 +43,9 @@ class TOnlineAccount {
 			}
 
 			$dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, $entityForGroup);
+
+			// conf cachée, pour forcer l'affectation à l'entité 1, car l'authentification via API en as besoin à l'heure actuelle
+			if (!empty($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP_FORCE_INTO_ENTITY_ONE)) $dolibarr_user->SetInGroup($conf->global->ONLINE_ACCOUNT_DEFAULT_USER_GROUP, 1);
 		}
 
 		if(empty($dolibarr_user->api_key) && !empty($conf->global->ONLINE_GENERATE_USER_API_KEY)){
