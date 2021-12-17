@@ -1,5 +1,5 @@
 <?php
-
+if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1); // Disables token renewal
 require ('../config.php');
 require_once DOL_DOCUMENT_ROOT . '/user/class/user.class.php';
 dol_include_once('/onlineaccount/class/onlineaccount.class.php');
